@@ -14,8 +14,8 @@ class Place(models.Model):
 
 class PlaceImage(models.Model):
     place = models.ForeignKey(Place, related_name='images', on_delete=models.CASCADE)
-    image = models.ImageField(upload_to='static/places/')
-    order = models.PositiveBigIntegerField(default=0)
+    image = models.ImageField(upload_to='')
+    order = models.PositiveBigIntegerField(default=1)
 
     def __str__(self):
         return f"{self.order} {self.place.title}"
