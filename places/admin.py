@@ -1,14 +1,17 @@
 from django.contrib import admin
 from django.utils.html import format_html
 
+from adminsortable2.admin import SortableAdminBase, SortableInlineAdminMixin
+
 from .models import Place, PlaceImage
 
 
-class PlaceImageInLine(admin.TabularInline):
+class PlaceImageInLine(SortableInlineAdminMixin, admin.StackedInline):
     model = PlaceImage
-    extra = 1
+    extra = 3
     fields = ('image', 'previews', 'position')
     readonly_fields = ('previews',)
+    ordering = ['position']
 
     def previews(self, obj):
         if obj.pk and obj.image:
@@ -20,5 +23,6 @@ class PlaceImageInLine(admin.TabularInline):
 
 
 @admin.register(Place)
-class PlaceAdmin(admin.ModelAdmin):
+class PlaceAdmin(SortableAdminBase, admin.ModelAdmin):
     inlines = [PlaceImageInLine]
+    list_display = ("title",)
