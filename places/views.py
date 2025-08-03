@@ -29,7 +29,7 @@ def show_places(request):
 
 def place_detail(request, place_id):
     place = get_object_or_404(Place, pk=place_id)
-    imgs = [img.image.url for img in place.images.all().order_by('order')]
+    imgs = [img.image.url for img in place.images.all().order_by('position')]
     return JsonResponse({
         'title': place.title,
         'imgs': imgs,
