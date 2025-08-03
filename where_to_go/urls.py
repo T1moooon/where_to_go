@@ -8,7 +8,11 @@ from places.views import show_places, place_detail
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', show_places),
-    path('places/<int:place_id>/', place_detail)
+    path(
+        'places/<int:place_id>/',
+        place_detail,
+        name='place-json'
+        )
 ]
 
 if settings.DEBUG:
