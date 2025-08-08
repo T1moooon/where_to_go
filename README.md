@@ -22,4 +22,5 @@
     ```bash
     python manage.py migrate
     python manage.py runserver
+    python manage.py load_place http://адрес/файла.json # Добавить локацию в бд
     ```
