@@ -1,8 +1,9 @@
+from django.db.models import Prefetch
 from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse
 from django.urls import reverse
 
-from .models import Place
+from .models import Place, PlaceImage
 
 
 def show_places(request):
@@ -28,8 +29,14 @@ def show_places(request):
 
 
 def place_detail(request, place_id):
-    place = get_object_or_404(Place, pk=place_id)
+    place = get_object_or_404(
+        Place.objects.prefetch_related(
+            Prefetch('images', queryset=PlaceImage.objects.order_by('position'))
+            ),
+        pk=place_id
+        )
     imgs = [img.image.url for img in place.images.all().order_by('position')]
+
     return JsonResponse({
         'title': place.title,
         'imgs': imgs,
