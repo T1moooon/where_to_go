@@ -51,13 +51,11 @@ class Command(BaseCommand):
             parsed_url = urlparse(url)
             filename = os.path.basename(unquote(parsed_url.path)) or f'image_{position}.jpg'
 
-            img_obj, img_created = PlaceImage.objects.get_or_create(
+            img_obj, img_created = PlaceImage.objects.update_or_create(
                 place=place,
                 position=position,
-                defaults={'image': None}
+                defaults={'image': ContentFile(resp.content, name=filename)}
             )
-
-            img_obj.image.save(filename, ContentFile(resp.content), save=True)
 
             verb = 'Создана' if img_created else 'Обновлена'
             self.stdout.write(self.style.SUCCESS(f'{verb} картинка #{position}: {filename}'))
