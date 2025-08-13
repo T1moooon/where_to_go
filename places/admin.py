@@ -25,14 +25,14 @@ class PlaceImageInLine(SortableInlineAdminMixin, admin.StackedInline):
 @admin.register(Place)
 class PlaceAdmin(SortableAdminBase, admin.ModelAdmin):
     inlines = [PlaceImageInLine]
-    list_display = ("title",)
-    search_fields = ("title",)
+    list_display = ('title',)
+    search_fields = ('title',)
 
 
 @admin.register(PlaceImage)
 class PlaceImageAdmin(admin.ModelAdmin):
-    list_display = ("place", "image", "position")
-    list_editable = ("position", "image",)
-    search_fields = ("place__title",)
-    list_select_related = ("place",)
-    autocomplete_fields = ("place",)
+    list_display = ('place', 'image', 'position')
+    list_editable = ('position', 'image',)
+    search_fields = ('place__title',)
+    list_select_related = ('place',)
+    autocomplete_fields = ('place',)

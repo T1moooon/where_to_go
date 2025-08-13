@@ -8,18 +8,18 @@ from .models import Place
 def show_places(request):
     places = Place.objects.all()
     geojson_places = {
-        "type": "FeatureCollection",
-        "features": [
+        'type': 'FeatureCollection',
+        'features': [
             {
-                "type": "Feature",
-                "geometry": {
-                    "type": "Point",
-                    "coordinates": [float(place.longitude), float(place.latitude)]
+                'type': 'Feature',
+                'geometry': {
+                    'type': 'Point',
+                    'coordinates': [float(place.longitude), float(place.latitude)]
                 },
-                "properties": {
-                    "title": place.title,
-                    "placeId": place.id,
-                    "detailsUrl": reverse('place-json', args=[place.id])
+                'properties': {
+                    'title': place.title,
+                    'placeId': place.id,
+                    'detailsUrl': reverse('place-json', args=[place.id])
                 }
             } for place in places
         ]
