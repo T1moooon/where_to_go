@@ -45,8 +45,20 @@ class Command(BaseCommand):
             if 'github.com' in url and '/blob/' in url:
                 url = url.replace('github.com', 'raw.githubusercontent.com').replace('/blob/', '/')
 
-            resp = requests.get(url)
-            resp.raise_for_status()
+            try:
+                resp = requests.get(url)
+                resp.raise_for_status()
+            except requests.exceptions.HTTPError as e:
+                status = e.response.status_code if e.response else 'no response'
+                self.stderr.write(self.style.WARNING(
+                    f"[{position}] HTTPError {status} при скачивании {url}"
+                ))
+                continue
+            except requests.exceptions.RequestException as e:
+                self.stderr.write(self.style.WARNING(
+                    f"[{position}] Ошибка при запросе {url}: {e}"
+                ))
+                continue
 
             parsed_url = urlparse(url)
             filename = os.path.basename(unquote(parsed_url.path)) or f'image_{position}.jpg'
