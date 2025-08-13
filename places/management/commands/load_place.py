@@ -22,15 +22,15 @@ class Command(BaseCommand):
 
         response = requests.get(json_url)
         response.raise_for_status()
-        place_info = response.json()
+        raw_place = response.json()
 
         place, created = Place.objects.get_or_create(
-            title=place_info.get('title', 'Без названия'),
+            title=raw_place.get('title', 'Без названия'),
             defaults={
-                'short_description': place_info.get('description_short', ''),
-                'long_description': place_info.get('description_long', ''),
-                'longitude': place_info['coordinates']['lng'],
-                'latitude': place_info['coordinates']['lat']
+                'short_description': raw_place.get('description_short', ''),
+                'long_description': raw_place.get('description_long', ''),
+                'longitude': raw_place['coordinates']['lng'],
+                'latitude': raw_place['coordinates']['lat']
             }
         )
         if created:
@@ -38,7 +38,7 @@ class Command(BaseCommand):
         else:
             self.stdout.write(self.style.WARNING(f'Место уже существует: {place.title}'))
 
-        self.download_images(place, place_info.get('imgs', []))
+        self.download_images(place, raw_place.get('imgs', []))
 
     def download_images(self, place, images_urls):
         for position, url in enumerate(images_urls, start=1):
@@ -48,8 +48,8 @@ class Command(BaseCommand):
             resp = requests.get(url)
             resp.raise_for_status()
 
-            parsed = urlparse(url)
-            filename = os.path.basename(unquote(parsed.path)) or f'image_{position}.jpg'
+            parsed_url = urlparse(url)
+            filename = os.path.basename(unquote(parsed_url.path)) or f'image_{position}.jpg'
 
             img_obj, img_created = PlaceImage.objects.get_or_create(
                 place=place,
